@@ -76,9 +76,9 @@ const createPointEditTemplate = (point = {}) => {
     ? 'card--repeat'
     : '';
 
-    const repeatingTemplate = createPointEditRepeatingTemplate(repeating);
+  const repeatingTemplate = createPointEditRepeatingTemplate(repeating);
 
-    const colorsTemplate = createPointEditColorsTemplate(color);
+  const colorsTemplate = createPointEditColorsTemplate(color);
 
   return (
     `<article class="card card--edit card--${color} ${repeatingClassName}">
@@ -120,15 +120,16 @@ const createPointEditTemplate = (point = {}) => {
         </div>
         </form>
         </article>`
-      );
-    };
+  );
+};
 
 export default class PointEditView {
   constructor(point) {
     this.point = point;
   }
+
   getTemplate() {
-    return createPointEditTemplate(this,point);
+    return createPointEditTemplate(this.point);
   }
 
   getElement() {
