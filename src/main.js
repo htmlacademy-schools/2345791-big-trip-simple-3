@@ -7,7 +7,7 @@ const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = siteMainElement.querySelector('.main__control');
 const boardPresenter = new BoardPresenter();
 
-render(new NewTaskButtonView(), siteHeaderElement);
+render(new NewPointButtonView(), siteHeaderElement);
 render(new FilterView(), siteMainElement);
 
 boardPresenter.init(siteMainElement);

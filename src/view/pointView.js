@@ -24,7 +24,7 @@ const createPointTemplate = () => (
           </svg>
         </div>
         <div class="card__textarea-wrap">
-          <p class="card__text">Example default task with default color.</p>
+          <p class="card__text">Example default point with default color.</p>
         </div>
         <div class="card__settings">
           <div class="card__details">

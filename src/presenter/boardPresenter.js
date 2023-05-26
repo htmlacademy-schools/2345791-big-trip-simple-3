@@ -1,25 +1,25 @@
 import BoardView from '../view/boardView.js';
 import SortView from '../view/sortView.js';
 import PointListView from '../view/pointListView';
-import TaskView from '../view/pointView';
+import PointView from '../view/pointView';
 import PointEditView from '../view/editPointView';
 import LoadMoreButtonView from '../view/loadMoreButtonView';
 import {render} from '../render.js';
 
 export default class BoardPresenter {
   boardComponent = new BoardView();
-  taskListComponent = new PointListView();
+  pointListComponent = new PointListView();
 
   init = (boardContainer) => {
     this.boardContainer = boardContainer;
 
     render(this.boardComponent, this.boardContainer);
     render(new SortView(), this.boardComponent.getElement());
-    render(this.taskListComponent, this.boardComponent.getElement());
-    render(new PointEditView(), this.taskListComponent.getElement());
+    render(this.pointListComponent, this.boardComponent.getElement());
+    render(new PointEditView(), this.pointListComponent.getElement());
 
     for (let i = 0; i < 3; i++) {
-      render(new TaskView(), this.taskListComponent.getElement());
+      render(new PointView(), this.pointListComponent.getElement());
     }
 
     render(new LoadMoreButtonView(), this.boardComponent.getElement());

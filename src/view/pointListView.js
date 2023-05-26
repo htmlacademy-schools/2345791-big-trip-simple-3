@@ -1,6 +1,6 @@
 import {createElement} from '../render.js';
 
-const createPointListTemplate = () => '<div class="board__tasks"></div>';
+const createPointListTemplate = () => '<div class="board__points"></div>';
 
 export default class PointListView {
   getTemplate() {
