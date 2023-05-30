@@ -4,8 +4,8 @@ import {render} from './render.js';
 import BoardPresenter from './presenter/boardPresenter';
 import PointsModel from './model/pointModel';
 
-const siteMainElement = document.querySelector('.main');
-const siteHeaderElement = siteMainElement.querySelector('.main__control');
+const siteMainElement = document.querySelector('.page-body__page-main');
+const siteHeaderElement = siteMainElement.querySelector('.trip-events');
 
 const pointsModel = new PointsModel();
 const boardPresenter = new BoardPresenter();

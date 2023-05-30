@@ -1,23 +1,24 @@
-
-const path = require('path')
+const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './src/main.js',
+
   output: {
-    path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
-    clean: true,
+    path: path.resolve(__dirname, 'build'),
+    clean: true
   },
+
   devtool: 'source-map',
-  rules: [
-    {
-      test: /\.js$/,
-      exclude: /(node_modules)/,
-      use: ['babel-loader']
-    },
-    {
-      test: /\.css$/i,
-      use: ['style-loader', 'css-loader']
-    }
-]
-}
+
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules)/,
+        use: ['babel-loader']
+      }
+    ]
+  }
+};

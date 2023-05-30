@@ -1,5 +1,5 @@
 import {createElement} from '../render.js';
-import {translatePointDueDate, isPointExpired, isPointRepeating} from '../utils.js'
+import {translatePointDueDate, isPointExpired, isPointRepeating} from '../utils.js';
 
 const createPointTemplate = (point) => {
   const {color, description, dueDate, repeating, isArchived, isFavorited} = point;
@@ -80,7 +80,7 @@ export default class PointView {
     }
 
     return this.element;
-  };
+  }
 
   removeElement() {
     this.element = null;

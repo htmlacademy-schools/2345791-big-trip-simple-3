@@ -4,9 +4,9 @@ import {COLORS} from '../const.js';
 
 const generateDescription = () => {
   const descriptions = [
-    'Îòëè÷íîå ìåñòî íàçíà÷åíèÿ',
-    'Ïóñòîå îïèñàíèå',
-    'Î÷åíü èíôîğìàòèâíîå îïèñàíèå',
+    'ĞÑ‡ĞµĞ½ÑŒ Ğ¸Ğ½Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ‚Ğ¸Ğ²Ğ½Ğ¾Ğµ Ğ¾Ğ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ',
+    'ĞŸÑƒÑÑ‚Ğ¾Ğµ Ğ¾Ğ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ',
+    'ĞĞµĞ²ĞµÑ€Ğ¾ÑÑ‚Ğ½Ğ¾ Ğ¿Ğ¾Ğ»ĞµĞ·Ğ½Ğ¾Ğµ Ğ¾Ğ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ',
   ];
 
   const randomIndex = getRandomInt(0, descriptions.length - 1);
@@ -28,13 +28,13 @@ const generateDate = () => {
 };
 
 const generateRepeating = () => ({
-  mo: false,
-  tu: false,
-  we: Boolean(getRandomInt(0, 1)),
-  th: false,
-  fr: Boolean(getRandomInt(0, 1)),
-  sa: false,
-  su: false,
+  mon: false,
+  tue: false,
+  wed: Boolean(getRandomInt(0, 1)),
+  thu: false,
+  fri: Boolean(getRandomInt(0, 1)),
+  sat: false,
+  sun: false,
 });
 
 const getRandomColor = () => {
@@ -48,13 +48,13 @@ export const generatePoint = () => {
   const repeating = dueDate === null
     ? generateRepeating()
     : {
-      mo: false,
-      tu: false,
-      we: false,
-      th: false,
-      fr: false,
-      sa: false,
-      su: false,
+      mon: false,
+      tue: false,
+      wed: false,
+      thu: false,
+      fri: false,
+      sat: false,
+      sun: false,
     };
 
   return {

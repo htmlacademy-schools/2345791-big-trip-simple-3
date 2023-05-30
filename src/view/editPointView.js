@@ -60,13 +60,13 @@ const createPointEditTemplate = (point = {}) => {
     description = '',
     dueDate = null,
     repeating = {
-      mo: false,
-      tu: false,
-      we: false,
-      th: false,
-      fr: false,
-      sa: false,
-      su: false,
+      mon: false,
+      tue: false,
+      wed: false,
+      thu: false,
+      fri: false,
+      sat: false,
+      sun: false,
     },
   } = point;
 
