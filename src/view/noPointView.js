@@ -1,13 +1,11 @@
 import {createElement} from '../render.js';
 
-const createLoadMoreButtonTemplate = () => '<button class="load-more btn" type="button">load more</button>';
+const createNoPointTemplate = () => (
+  '<p class="trip-events__msg">Click New Event to create your first point</p>'
+);
 
-export default class LoadMoreButtonView {
+export default class NoPointView {
   #element = null;
-
-  get template() {
-    return createLoadMoreButtonTemplate();
-  }
 
   get element() {
     if (!this.#element) {
@@ -15,6 +13,10 @@ export default class LoadMoreButtonView {
     }
 
     return this.#element;
+  }
+
+  get template() {
+    return createNoPointTemplate();
   }
 
   removeElement() {

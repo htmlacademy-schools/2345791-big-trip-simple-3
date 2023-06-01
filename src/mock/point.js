@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import {getRandomInt} from '../utils.js';
 import {COLORS} from '../const.js';
+import { makeDefaultDayConfig } from '../utils.js';
 
 const generateDescription = () => {
   const descriptions = [
@@ -45,17 +46,10 @@ const getRandomColor = () => {
 
 export const generatePoint = () => {
   const dueDate = generateDate();
+  const days = generateRepeating();
   const repeating = dueDate === null
-    ? generateRepeating()
-    : {
-      mon: false,
-      tue: false,
-      wed: false,
-      thu: false,
-      fri: false,
-      sat: false,
-      sun: false,
-    };
+    ? generateRepeating
+    : makeDefaultDayConfig(days);
 
   return {
     description: generateDescription(),
