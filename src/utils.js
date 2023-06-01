@@ -17,7 +17,7 @@ function makeDefaultDayConfig(days) {
   return Object.keys(days).reduce((result, currentDay) => {
     result[currentDay] = false;
     return result;
-}, {});
+  }, {});
 }
 
 export {getRandomInt, translatePointDueDate, isPointExpired, isPointRepeating, makeDefaultDayConfig};
