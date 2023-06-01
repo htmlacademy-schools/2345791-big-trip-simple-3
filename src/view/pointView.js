@@ -2,17 +2,17 @@ import {createElement} from '../render.js';
 import {translatePointDueDate, isPointExpired, isPointRepeating} from '../utils.js';
 
 const createPointTemplate = (point) => {
-  const {color, description, dueDate, repeating, isArchived, isFavorited} = point;
+  const {description, dueDate, repeating, isArchived, isFavorited} = point;
   const date = dueDate !== null
     ? translatePointDueDate(dueDate)
     : '';
 
   const deadlineClassName = isPointExpired(dueDate)
-    ? 'card--deadline'
+    ? 'event--deadline'
     : '';
 
   const repeatClassName = isPointRepeating(repeating)
-    ? 'card--repeat'
+    ? 'event--repeat'
     : '';
 
   const archiveClassName = isArchived
@@ -24,65 +24,59 @@ const createPointTemplate = (point) => {
     : 'card__btn--favorites';
 
   return (
-    `<article class="card card--${color} ${deadlineClassName} ${repeatClassName}">
-      <div class="card__form">
-        <div class="card__inner">
-          <div class="card__control">
-            <button type="button" class="card__btn card__btn--edit">
-              edit
-            </button>
-            <button type="button" class="card__btn ${archiveClassName}">
-              archive
-            </button>
-            <button
-              type="button"
-              class="card__btn ${favoriteClassName}"
-            >
-              favorites
-            </button>
-          </div>
-          <div class="card__color-bar">
-            <svg class="card__color-bar-wave" width="100%" height="10">
-              <use xlink:href="#wave"></use>
-            </svg>
-          </div>
-          <div class="card__textarea-wrap">
-            <p class="card__text">${description}</p>
-          </div>
-          <div class="card__settings">
-          <div class="card__details">
-            <div class="card__dates">
-              <div class="card__date-deadline">
-                <p class="card__input-deadline-wrap">
-                  <span class="card__date">${date}</span>
-                </p>
-              </div>
-            </div>
-          </div>
+    `<li class="trip-events__item">
+      <div class="event ${deadlineClassName} ${repeatClassName} ${archiveClassName} ${favoriteClassName}">
+        <time class="event__date" datetime=${date}>MAR 18</time>
+        <div class="event__type">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
         </div>
+        <h3 class="event__title">${description}</h3>
+        <div class="event__schedule">
+          <p class="event__time">
+            <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+            &mdash;
+            <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+          </p>
+        </div>
+        <p class="event__price">
+          &euro;&nbsp;<span class="event__price-value">20</span>
+        </p>
+        <h4 class="visually-hidden">Offers:</h4>
+        <ul class="event__selected-offers">
+          <li class="event__offer">
+            <span class="event__offer-title">Order Uber</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">20</span>
+          </li>
+        </ul>
+        <button class="event__rollup-btn" type="button">
+          <span class="visually-hidden">Open event</span>
+        </button>
       </div>
-    </div>
-    </article>`
+    </li>`
   );
 };
 export default class PointView {
+  #element = null;
+  #point = null;
+
   constructor(point) {
-    this.point = point;
+    this.#point = point;
   }
 
-  getTemplate() {
-    return createPointTemplate(this.point);
+  get template() {
+    return createPointTemplate(this.#point);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }

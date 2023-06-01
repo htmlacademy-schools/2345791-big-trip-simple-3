@@ -7,23 +7,63 @@ import LoadMoreButtonView from '../view/loadMoreButtonView.js';
 import {render} from '../render.js';
 
 export default class BoardPresenter {
-  boardComponent = new BoardView();
-  pointsListComponent = new PointListView();
+  #boardContainer = null;
+  #pointsModel = null;
 
+  #boardComponent = new BoardView();
+  #pointsListComponent = new PointListView();
+
+  #boardPoints = [];
   init = (boardContainer, pointsModel) => {
-    this.boardContainer = boardContainer;
-    this.pointsModel = pointsModel;
-    this.boardPoints = [...this.pointsModel.getPoints()];
+    this.#boardContainer = boardContainer;
+    this.#pointsModel = pointsModel;
+    this.#boardPoints = [...this.#pointsModel.getPoints()];
 
-    render(this.boardComponent, this.boardContainer);
-    render(new SortView(), this.boardComponent.getElement());
-    render(this.pointsListComponent, this.boardComponent.getElement());
-    render(new PointEditView(this.boardPoints[0]), this.pointsListComponent.getElement());
+    render(this.#boardComponent, this.#boardContainer);
+    render(new SortView(), this.#boardComponent.element);
+    render(this.#pointsListComponent, this.#boardComponent.element);
 
-    for (let i = 1; i < this.boardPoints.length; i++) {
-      render(new PointView(this.boardPoints[i]), this.pointsListComponent.getElement());
+    for (let i = 0; i < this.#boardPoints.length; i++) {
+      this.#renderPoint(this.#boardPoints[i]);
     }
 
-    render(new LoadMoreButtonView(), this.boardComponent.getElement());
+    render(new LoadMoreButtonView(), this.#boardComponent.element);
+  };
+
+  #renderPoint = (point) => {
+    const pointComponent = new PointView(point);
+    const pointEditComponent = new PointEditView(point);
+
+    const replaceCardToForm = () => {
+      this.#pointsListComponent.element.replaceChild(pointEditComponent.element, pointComponent
+        .element);
+    };
+
+    const replaceFormToCard = () => {
+      this.#pointsListComponent.element.replaceChild(pointComponent
+        .element, pointEditComponent.element);
+    };
+
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        replaceFormToCard();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replaceCardToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
+
+    pointEditComponent.element.querySelector('.event__save-btn').addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    render(pointComponent
+      , this.#pointsListComponent.element);
   };
 }

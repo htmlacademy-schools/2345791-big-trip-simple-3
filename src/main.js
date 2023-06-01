@@ -6,12 +6,12 @@ import PointsModel from './model/pointModel';
 
 const siteMainElement = document.querySelector('.page-body__page-main');
 const tripControls = document.querySelector('.trip-controls__filters');
-const siteHeaderElement = siteMainElement.querySelector('.trip-events');
+const tripElement = siteMainElement.querySelector('.trip-events');
 
 const pointsModel = new PointsModel();
 const boardPresenter = new BoardPresenter();
 
-render(new NewPointButtonView(), siteHeaderElement);
+render(new NewPointButtonView(), tripElement);
 render(new FilterView(), tripControls);
 
-boardPresenter.init(siteHeaderElement, pointsModel);
+boardPresenter.init(tripElement, pointsModel);
