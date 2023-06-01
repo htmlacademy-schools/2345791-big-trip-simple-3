@@ -5,7 +5,7 @@ import PointView from '../view/pointView.js';
 import PointEditView from '../view/editPointView.js';
 import LoadMoreButtonView from '../view/loadMoreButtonView.js';
 import NoPointView from '../view/noPointView.js';
-import {render} from '../render.js';
+import {render} from '../framework/render.js';
 
 const POINT_COUNT_PER_STEP = 8;
 
@@ -31,8 +31,7 @@ export default class BoardPresenter {
     this.#renderBoard();
   };
 
-  #handleLoadMoreButtonClick = (evt) => {
-    evt.preventDefault();
+  #handleLoadMoreButtonClick = () => {
     this.#boardPoints
       .slice(this.#renderedPointCount, this.#renderedPointCount + POINT_COUNT_PER_STEP)
       .forEach((task) => this.#renderPoint(task));
@@ -67,18 +66,17 @@ export default class BoardPresenter {
       }
     };
 
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointComponent.setEditClickHandler(() => {
       replaceCardToForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    pointEditComponent.element.querySelector('.event__save-btn').addEventListener('submit', (evt) => {
-      evt.preventDefault();
+    pointEditComponent.setFormSubmitHandler(() => {
       replaceFormToCard();
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
-    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointEditComponent.setClickHandler(() => {
       replaceFormToCard();
       document.removeEventListener('keydown', onEscKeyDown);
     });
@@ -105,7 +103,7 @@ export default class BoardPresenter {
     if (this.#boardPoints.length > POINT_COUNT_PER_STEP) {
       render(this.#loadMoreButtonComponent, this.#boardComponent.element);
 
-      this.#loadMoreButtonComponent.element.addEventListener('click', this.#handleLoadMoreButtonClick);
+      this.#loadMoreButtonComponent.setClickHandler(this.#handleLoadMoreButtonClick);
     }
   };
 }

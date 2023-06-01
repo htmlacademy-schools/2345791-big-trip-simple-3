@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {translatePointDueDate, isPointExpired, isPointRepeating} from '../utils.js';
 
 const createPointTemplate = (point) => {
@@ -56,11 +56,11 @@ const createPointTemplate = (point) => {
     </li>`
   );
 };
-export default class PointView {
-  #element = null;
+export default class PointView extends AbstractView {
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
   }
 
@@ -68,15 +68,13 @@ export default class PointView {
     return createPointTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setEditClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+  };
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 }
