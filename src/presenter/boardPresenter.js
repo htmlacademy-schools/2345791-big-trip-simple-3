@@ -4,7 +4,10 @@ import PointListView from '../view/pointListView.js';
 import PointView from '../view/pointView.js';
 import PointEditView from '../view/editPointView.js';
 import LoadMoreButtonView from '../view/loadMoreButtonView.js';
+import NoPointView from '../view/noPointView.js';
 import {render} from '../render.js';
+
+const POINT_COUNT_PER_STEP = 8;
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -12,22 +15,34 @@ export default class BoardPresenter {
 
   #boardComponent = new BoardView();
   #pointsListComponent = new PointListView();
+  #loadMoreButtonComponent = new LoadMoreButtonView();
 
   #boardPoints = [];
-  init = (boardContainer, pointsModel) => {
+  #renderedPointCount = POINT_COUNT_PER_STEP;
+
+  constructor(boardContainer, pointsModel) {
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
+  }
+
+  init = () => {
     this.#boardPoints = [...this.#pointsModel.getPoints()];
 
-    render(this.#boardComponent, this.#boardContainer);
-    render(new SortView(), this.#boardComponent.element);
-    render(this.#pointsListComponent, this.#boardComponent.element);
+    this.#renderBoard();
+  };
 
-    for (let i = 0; i < this.#boardPoints.length; i++) {
-      this.#renderPoint(this.#boardPoints[i]);
+  #handleLoadMoreButtonClick = (evt) => {
+    evt.preventDefault();
+    this.#boardPoints
+      .slice(this.#renderedPointCount, this.#renderedPointCount + POINT_COUNT_PER_STEP)
+      .forEach((task) => this.#renderPoint(task));
+
+    this.#renderedPointCount += POINT_COUNT_PER_STEP;
+
+    if (this.#renderedPointCount >= this.#boardPoints.length) {
+      this.#loadMoreButtonComponent.element.remove();
+      this.#loadMoreButtonComponent.removeElement();
     }
-
-    render(new LoadMoreButtonView(), this.#boardComponent.element);
   };
 
   #renderPoint = (point) => {
@@ -63,7 +78,34 @@ export default class BoardPresenter {
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
+    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
     render(pointComponent
       , this.#pointsListComponent.element);
+  };
+
+  #renderBoard = () => {
+    render(this.#boardComponent, this.#boardContainer);
+
+    if (this.#boardPoints.every((point) => point.isArchived)) {
+      render(new NoPointView(), this.#boardComponent.element);
+      return;
+    }
+
+    render(new SortView(), this.#boardComponent.element);
+    render(this.#pointsListComponent, this.#boardComponent.element);
+
+    for (let i = 0; i < Math.min(this.#boardPoints.length, POINT_COUNT_PER_STEP); i++) {
+      this.#renderPoint(this.#boardPoints[i]);
+    }
+
+    if (this.#boardPoints.length > POINT_COUNT_PER_STEP) {
+      render(this.#loadMoreButtonComponent, this.#boardComponent.element);
+
+      this.#loadMoreButtonComponent.element.addEventListener('click', this.#handleLoadMoreButtonClick);
+    }
   };
 }
