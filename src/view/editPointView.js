@@ -1,4 +1,13 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import {makeDefaultDayConfig} from '/src/utils.js';
+
+const BLANK_POINT = {
+  description: '',
+  dueDate: null,
+  repeating: makeDefaultDayConfig(),
+  isArchived: false,
+  isFavorited: false,
+};
 
 const createPointEditTemplate = (point = {}) => {
   const {
@@ -163,11 +172,11 @@ const createPointEditTemplate = (point = {}) => {
   );
 };
 
-export default class PointEditView {
-  #element = null;
+export default class PointEditView extends AbstractView {
   #point = null;
 
-  constructor(point) {
+  constructor(point = BLANK_POINT) {
+    super();
     this.#point = point;
   }
 
@@ -175,15 +184,23 @@ export default class PointEditView {
     return createPointEditTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('.event__save-btn').addEventListener('submit', this.#formSubmitHandler);
+  };
 
-    return this.#element;
-  }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  setClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
+  };
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 }

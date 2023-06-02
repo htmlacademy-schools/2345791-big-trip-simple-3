@@ -1,6 +1,6 @@
 import NewPointButtonView from './view/createPointView';
 import FilterView from './view/filterView';
-import {render} from './render.js';
+import {render} from './framework/render.js';
 import BoardPresenter from './presenter/boardPresenter';
 import PointsModel from './model/pointModel';
 

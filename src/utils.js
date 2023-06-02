@@ -13,11 +13,16 @@ const isPointExpired = (dueDate) => dueDate && dayjs().isAfter(dueDate, 'D');
 
 const isPointRepeating = (repeating) => Object.values(repeating).some(Boolean);
 
-function makeDefaultDayConfig(days) {
-  return Object.keys(days).reduce((result, currentDay) => {
-    result[currentDay] = false;
-    return result;
-  }, {});
+function makeDefaultDayConfig() {
+  return {
+    mon: false,
+    tue: false,
+    wed: false,
+    thu: false,
+    fri: false,
+    sat: false,
+    sun: false,
+  };
 }
 
 export {getRandomInt, translatePointDueDate, isPointExpired, isPointRepeating, makeDefaultDayConfig};
