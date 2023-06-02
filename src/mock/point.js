@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import {getRandomInt} from '../utils.js';
 import {COLORS} from '../const.js';
 import { makeDefaultDayConfig } from '../utils.js';
+import {nanoid} from 'nanoid';
 
 const generateDescription = () => {
   const descriptions = [
@@ -52,6 +53,7 @@ export const generatePoint = () => {
     : makeDefaultDayConfig(days);
 
   return {
+    id: nanoid(),
     description: generateDescription(),
     dueDate,
     repeating,
