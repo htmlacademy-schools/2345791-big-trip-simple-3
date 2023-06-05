@@ -3,4 +3,10 @@ const FilterType = {
   FUTURE: 'future'
 };
 
-export {FilterType};
+const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date',
+  PRICE: 'price',
+};
+
+export {FilterType, SortType};

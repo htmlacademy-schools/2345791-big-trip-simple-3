@@ -2,7 +2,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 import {translatePointDueDate, isPointFuture} from '../utils.js';
 
 const createPointTemplate = (point) => {
-  const {description, dueDate} = point;
+  const {description, dueDate, price} = point;
   const date = dueDate !== null
     ? translatePointDueDate(dueDate)
     : '';
@@ -34,7 +34,7 @@ const createPointTemplate = (point) => {
           <li class="event__offer">
             <span class="event__offer-title">Order Uber</span>
             &plus;&euro;&nbsp;
-            <span class="event__offer-price">20</span>
+            <span class="event__offer-price">${price}</span>
           </li>
         </ul>
         <button class="event__rollup-btn" type="button">

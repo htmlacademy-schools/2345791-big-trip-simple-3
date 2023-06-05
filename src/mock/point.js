@@ -27,13 +27,20 @@ const generateDate = () => {
   return dayjs().add(daysGap, 'day').toDate();
 };
 
+const generatePrice = () => {
+  const maxPrice = 100;
+  const minPrice = 10;
+  return getRandomInt(minPrice, maxPrice);
+};
 
 export const generatePoint = () => {
   const dueDate = generateDate();
+  const price = generatePrice();
 
   return {
     id: nanoid(),
     description: generateDescription(),
-    dueDate
+    dueDate,
+    price
   };
 };
