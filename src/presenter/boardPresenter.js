@@ -5,6 +5,7 @@ import LoadMoreButtonView from '../view/loadMoreButtonView.js';
 import NoPointView from '../view/noPointView.js';
 import {render, RenderPosition, remove} from '../framework/render.js';
 import PointPresenter from './pointPresenter.js';
+import {updateItem} from '../utils.js';
 
 
 const POINT_COUNT_PER_STEP = 8;
@@ -43,12 +44,21 @@ export default class BoardPresenter {
     }
   };
 
+  #handleModeChange = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  };
+
+  #handlePointChange = (updatedPoint) => {
+    this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
+  };
+
   #renderSort = () => {
     render(this.#sortComponent, this.#boardComponent.element, RenderPosition.AFTERBEGIN);
   };
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#pointsListComponent.element);
+    const pointPresenter = new PointPresenter(this.#pointsListComponent.element, this.#handlePointChange, this.#handleModeChange);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };

@@ -8,33 +8,29 @@ const getRandomInt = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const translatePointDueDate = (dueDate) => dayjs(dueDate).format('D MMMM');
+const translatePointDueDate = (dueDate) => dayjs(dueDate).format('DD/MM/YY mm:ss');
 
-const isPointExpired = (dueDate) => dueDate && dayjs().isAfter(dueDate, 'D');
-
-const isPointRepeating = (repeating) => Object.values(repeating).some(Boolean);
-
-function makeDefaultDayConfig() {
-  return {
-    mon: false,
-    tue: false,
-    wed: false,
-    thu: false,
-    fri: false,
-    sat: false,
-    sun: false,
-  };
-}
+const isPointFuture = (dueDate) => dueDate && dayjs().isBefore(dueDate, 'D');
 
 const isPointExpiringToday = (dueDate) => dueDate && dayjs(dueDate).isSame(dayjs(), 'D');
 
 const filter = {
-  [FilterType.ALL]: (points) => points.filter((point) => !point.isArchived),
-  [FilterType.OVERDUE]: (points) => points.filter((point) => isPointExpired(point.dueDate) && !point.isArchived),
-  [FilterType.TODAY]: (points) => points.filter((point) => isPointExpiringToday(point.dueDate) && !point.isArchived),
-  [FilterType.FAVORITES]: (points) => points.filter((point) => point.isFavorite && !point.isArchived),
-  [FilterType.REPEATING]: (points) => points.filter((point) => isPointRepeating(point.repeating) && !point.isArchived),
-  [FilterType.ARCHIVED]: (points) => points.filter((point) => point.isArchived),
+  [FilterType.ALL]: (points) => points.filter((point) => point),
+  [FilterType.FUTURE]: (points) => points.filter((point) => isPointFuture(point.dueDate)),
 };
 
-export {getRandomInt, translatePointDueDate, isPointExpired, isPointRepeating, makeDefaultDayConfig, filter, isPointExpiringToday};
+const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
+
+export {getRandomInt, translatePointDueDate, filter, isPointExpiringToday, updateItem, isPointFuture};

@@ -1,8 +1,8 @@
 import {filter} from '../utils.js';
 
 export const generateFilter = (points) => Object.entries(filter).map(
-  ([filterName, filterTasks]) => ({
+  ([filterName, filterPoints]) => ({
     name: filterName,
-    count: filterTasks(points).length,
+    count: filterPoints(points).length,
   }),
 );
