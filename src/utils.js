@@ -33,4 +33,32 @@ const updateItem = (items, update) => {
   ];
 };
 
-export {getRandomInt, translatePointDueDate, filter, isPointExpiringToday, updateItem, isPointFuture};
+const getWeightForNullDate = (dateA, dateB) => {
+  if (dateA === null && dateB === null) {
+    return 0;
+  }
+
+  if (dateA === null) {
+    return 1;
+  }
+
+  if (dateB === null) {
+    return -1;
+  }
+
+  return null;
+};
+
+const sortPointByDate = (pointA, pointB) => {
+  const weight = getWeightForNullDate(pointA.dueDate, pointB.dueDate);
+
+  return weight ?? dayjs(pointA.dueDate).diff(dayjs(pointB.dueDate));
+};
+
+const sortPointByPrice = (pointA, pointB) => {
+  const weight = getWeightForNullDate(pointA.price, pointB.price);
+
+  return weight ?? dayjs(pointA.dueDate).diff(dayjs(pointB.dueDate));
+};
+
+export {getRandomInt, translatePointDueDate, isPointFuture, isPointExpiringToday, filter, updateItem, sortPointByDate, sortPointByPrice};
