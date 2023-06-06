@@ -2,39 +2,36 @@ import AbstractView from '../framework/view/abstract-view.js';
 import {translatePointDueDate, isPointFuture} from '../utils.js';
 
 const createPointTemplate = (point) => {
-  const {description, dueDate, price} = point;
-  const date = dueDate !== null
-    ? translatePointDueDate(dueDate)
-    : '';
+  const { id , name, type, destination, startDate, endDate, price, offers} = point;
 
-  const futureClassName = isPointFuture(dueDate)
+  const futureClassName = isPointFuture(endDate)
     ? 'event--future'
     : '';
 
   return (
     `<li class="trip-events__item">
       <div class="event ${futureClassName}">
-        <time class="event__date" datetime=${date}</time>
+        <time class="event__date" datetime=${translatePointDueDate(startDate)}</time>
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${description}</h3>
+        <h3 class="event__title">${name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime=${date}</time>
+            <time class="event__start-time" datetime=${translatePointDueDate(startDate)}</time>
             &mdash;
-            <time class="event__end-time" datetime=${date}</time>
+            <time class="event__end-time" datetime=${translatePointDueDate(endDate)}</time>
           </p>
         </div>
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">20</span>
+          &euro;&nbsp;<span class="event__price-value">${price}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
           <li class="event__offer">
-            <span class="event__offer-title">Order Uber</span>
+            <span class="event__offer-title">${Object.keys(offers)}</span>
             &plus;&euro;&nbsp;
-            <span class="event__offer-price">${price}</span>
+            <span class="event__offer-price">${Object.values(offers)}</span>
           </li>
         </ul>
         <button class="event__rollup-btn" type="button">
