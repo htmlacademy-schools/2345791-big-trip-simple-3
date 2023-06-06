@@ -1,5 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { translatePointDueDate } from '../utils.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   id: 0,
@@ -181,22 +183,36 @@ const createPointEditTemplate = (point = {}) => {
 };
 
 export default class PointEditView extends AbstractStatefulView {
+  #startDatePicker = null;
+  #endDatePicker = null;
+
   #point = null;
 
   constructor(point = BLANK_POINT) {
     super();
     this._state = PointEditView.parsePointToState(point);
 
-    this.element.querySelector('.event__type-toggle')
-      .addEventListener('click', this.#typeToggleHandler);
-    this.element.querySelector('.event__input--destination')
-      .addEventListener('click', this.#destinationInputHandler);
     this.#setInnerHandlers();
+    this.#setDatepicker();
   }
 
   get template() {
     return createPointEditTemplate(this._state);
   }
+
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#startDatePicker) {
+      this.#startDatePicker.destroy();
+      this.#startDatePicker = null;
+    }
+
+    if (this.#endDatePicker) {
+      this.#endDatePicker.destroy();
+      this.#endDatePicker = null;
+    }
+  };
 
   reset = (point) => {
     this.updateElement(
@@ -207,6 +223,7 @@ export default class PointEditView extends AbstractStatefulView {
   _restoreHandlers = () => {
     this.#setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.#setDatepicker();
   };
 
   #typeToggleHandler = (evt) => {
@@ -222,6 +239,19 @@ export default class PointEditView extends AbstractStatefulView {
       destination: evt.target.value,
     });
   };
+
+  #startDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      startDate: userDate,
+    });
+  };
+
+  #endDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      endDate: userDate,
+    });
+  };
+
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
@@ -241,6 +271,25 @@ export default class PointEditView extends AbstractStatefulView {
   #clickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
+  };
+
+  #setDatepicker = () => {
+    this.#startDatePicker = flatpickr (
+      this.element.querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'j F',
+        defaultDate: this._state.startDate,
+        onChange: this.#startDateChangeHandler,
+      },
+    );
+    this.#endDatePicker = flatpickr (
+      this.element.querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'j F',
+        defaultDate: this._state.endDate,
+        onChange: this.#endDateChangeHandler,
+      },
+    );
   };
 
   #setInnerHandlers = () => {
