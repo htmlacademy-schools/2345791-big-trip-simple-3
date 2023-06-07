@@ -9,6 +9,7 @@ import {sortPointByDate, sortPointByPrice} from '../utils.js';
 import {filter} from '../utils.js';
 import {SortType, UserAction, UpdateType, FilterType} from '../const.js';
 import NewPointPresenter from './newPointPresenter.js';
+import LoadingView from '../view/loadingView.js';
 
 
 const POINT_COUNT_PER_STEP = 8;
@@ -20,6 +21,7 @@ export default class BoardPresenter {
 
   #boardComponent = new BoardView();
   #pointsListComponent = new PointListView();
+  #loadingComponent = new LoadingView();
   #noPointComponent = null;
   #sortComponent = null;
   #loadMoreButtonComponent = null;
@@ -29,6 +31,7 @@ export default class BoardPresenter {
   #newPointPresenter = null;
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
+  #isLoading = true;
 
   constructor(boardContainer, pointsModel, filterModel) {
     this.#boardContainer = boardContainer;
@@ -111,6 +114,11 @@ export default class BoardPresenter {
         this.#clearBoard({resetRenderedPointCount: true, resetSortType: true});
         this.#renderBoard();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
     }
   };
 
@@ -141,6 +149,10 @@ export default class BoardPresenter {
     points.forEach((point) => this.#renderPoint(point));
   };
 
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#boardComponent.element, RenderPosition.AFTERBEGIN);
+  };
+
   #renderNoPoints = () => {
     this.#noPointComponent = new NoPointView(this.#filterType);
     render(this.#noPointComponent, this.#boardComponent.element, RenderPosition.AFTERBEGIN);
@@ -161,6 +173,7 @@ export default class BoardPresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
     remove(this.#loadMoreButtonComponent);
 
     if (this.#noPointComponent) {
@@ -179,10 +192,15 @@ export default class BoardPresenter {
   };
 
   #renderBoard = () => {
+    render(this.#boardComponent, this.#boardContainer);
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     const points = this.points;
     const pointCount = points.length;
-
-    render(this.#boardComponent, this.#boardContainer);
 
     if (pointCount === 0) {
       this.#renderNoPoints();
