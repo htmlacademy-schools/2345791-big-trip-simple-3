@@ -13,14 +13,12 @@ const BLANK_POINT = {
 
 const createPointEditTemplate = (point = {}) => {
   const {
-    id,
     type,
     destination,
     name,
     startDate,
     endDate,
     price,
-    isTypeChanged,
   } = point;
 
   return (
