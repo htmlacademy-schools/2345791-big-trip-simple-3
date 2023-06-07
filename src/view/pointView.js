@@ -2,7 +2,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 import {translatePointDueDate, isPointFuture} from '../utils.js';
 
 const createPointTemplate = (point) => {
-  const { id, name, type, destination, startDate, endDate, price, offers} = point;
+  const { name, type, startDate, endDate, price, offers} = point;
 
   const futureClassName = isPointFuture(endDate)
     ? 'event--future'
