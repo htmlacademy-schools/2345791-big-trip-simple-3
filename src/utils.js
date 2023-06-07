@@ -61,4 +61,6 @@ const sortPointByPrice = (pointA, pointB) => {
   return weight ?? dayjs(pointA.dueDate).diff(dayjs(pointB.dueDate));
 };
 
-export {getRandomInt, translatePointDueDate, isPointFuture, isPointExpiringToday, filter, updateItem, sortPointByDate, sortPointByPrice};
+const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'DD/MM/YY/HH/mm');
+
+export {getRandomInt, translatePointDueDate, isPointFuture, isPointExpiringToday, filter, updateItem, sortPointByDate, sortPointByPrice, isDatesEqual};
