@@ -1,6 +1,9 @@
 import {render, replace, remove} from '../framework/render.js';
 import PointView from '../view/pointView.js';
 import PointEditView from '../view/editPointView.js';
+import {UserAction, UpdateType} from '../const.js';
+import { isDatesEqual } from '../utils.js';
+
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -36,6 +39,7 @@ export default class PointPresenter {
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setClickHandler(this.#handleEditCloseClick);
+    this.#pointEditComponent.setDeleteHandler(this.#handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this.#pointComponent, this.#pointListContainer);
@@ -95,8 +99,24 @@ export default class PointPresenter {
     this.#replaceFormToCard();
   };
 
-  #handleFormSubmit = (point) => {
-    this.#changeData(point);
+  #handleFormSubmit = (update) => {
+    const isMinorUpdate =
+      !isDatesEqual(this.#point.startDate, update.startDate) ||
+      this.#point.price !== update.price;
+
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update,
+    );
     this.#replaceFormToCard();
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 }

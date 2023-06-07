@@ -110,7 +110,7 @@ const createPointEditTemplate = (point = {}) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value=${price}>
+        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value=${price}>
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -222,6 +222,7 @@ export default class PointEditView extends AbstractStatefulView {
     this.#setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.#setDatepicker();
+    this.setDeleteHandler(this._callback.deleteClick);
   };
 
   #typeToggleHandler = (evt) => {
@@ -269,6 +270,16 @@ export default class PointEditView extends AbstractStatefulView {
   #clickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
+  };
+
+  setDeleteHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteHandler);
+  };
+
+  #deleteHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(PointEditView.parseStateToPoint(this._state));
   };
 
   #setDatepicker = () => {
