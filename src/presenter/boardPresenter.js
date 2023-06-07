@@ -169,7 +169,7 @@ export default class BoardPresenter {
     const pointCount = this.points.length;
 
     this.#newPointPresenter.destroy();
-    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.forEach((presenter) => presenter.delete());
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);

@@ -6,6 +6,7 @@ import PointsModel from './model/pointModel';
 import FilterModel from './model/filterModel.js';
 import PointsApiService from './pointsApiService';
 import NewPointButtonView from './view/newPointButtonView';
+import GetInfoApiService from './getInfoApiService';
 
 const AUTHORIZATION = 'Basic hS2sfS44wcl1sa2j';
 const END_POINT = 'https://18.ecmascript.pages.academy/big-trip';
@@ -23,7 +24,7 @@ const tripControls = document.querySelector('.trip-controls__filters');
 const tripElement = siteMainElement.querySelector('.trip-events');
 const newEventButton = document.querySelector('.trip-main__event-add-btn');
 
-const pointsModel = new PointsModel(new PointsApiService(END_POINT, AUTHORIZATION));
+const pointsModel = new PointsModel(new PointsApiService(END_POINT, AUTHORIZATION), new GetInfoApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
 const boardPresenter = new BoardPresenter(tripElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, pointsModel);

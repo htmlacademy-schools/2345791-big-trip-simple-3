@@ -15,12 +15,11 @@ const BLANK_POINT = {
 
 const createPointEditTemplate = (point = {}) => {
   const {
-    type,
-    destination,
-    name,
+    price,
     startDate,
     endDate,
-    price,
+    destination,
+    type
   } = point;
 
   return (
@@ -89,7 +88,7 @@ const createPointEditTemplate = (point = {}) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination} list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination.name} list="destination-list-1">
         <datalist id="destination-list-1">
           <option value="Amsterdam"></option>
           <option value="Geneva"></option>
@@ -173,7 +172,7 @@ const createPointEditTemplate = (point = {}) => {
 
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${name}</p>
+        <p class="event__destination-description">${destination.description}</p>
       </section>
     </section>
   </form>`
@@ -286,7 +285,7 @@ export default class PointEditView extends AbstractStatefulView {
     this.#startDatePicker = flatpickr (
       this.element.querySelector('#event-start-time-1'),
       {
-        dateFormat: 'j F',
+        dateFormat: 'd/M/y H:i',
         defaultDate: this._state.startDate,
         onChange: this.#startDateChangeHandler,
       },
@@ -294,7 +293,7 @@ export default class PointEditView extends AbstractStatefulView {
     this.#endDatePicker = flatpickr (
       this.element.querySelector('#event-end-time-1'),
       {
-        dateFormat: 'j F',
+        dateFormat: 'd/M/y H:i',
         defaultDate: this._state.endDate,
         onChange: this.#endDateChangeHandler,
       },
