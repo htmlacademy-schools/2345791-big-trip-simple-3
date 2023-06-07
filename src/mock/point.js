@@ -2,25 +2,45 @@ import dayjs from 'dayjs';
 import {getRandomInt} from '../utils.js';
 import {nanoid} from 'nanoid';
 
-const generateDescription = () => {
-  const descriptions = [
+const generateName = () => {
+  const names = [
     'Очень информативное описание',
     'Пустое описание',
     'Невероятно полезное описание',
   ];
 
-  const randomIndex = getRandomInt(0, descriptions.length - 1);
+  const randomIndex = getRandomInt(0, names.length - 1);
 
-  return descriptions[randomIndex];
+  return names[randomIndex];
+};
+
+const generateDestination = () => {
+  const destinations = [
+    'Назначение 1',
+    'Пункт',
+    'Лондон',
+    'Москва'
+  ];
+
+  const randomIndex = getRandomInt(0, destinations.length - 1);
+
+  return destinations[randomIndex];
+};
+
+const generateType = () => {
+  const types = [
+    'taxi',
+    'bus',
+    'train',
+    'flight'
+  ];
+
+  const randomIndex = getRandomInt(0, types.length - 1);
+
+  return types[randomIndex];
 };
 
 const generateDate = () => {
-  const isDate = Boolean(getRandomInt(0, 1));
-
-  if (!isDate) {
-    return null;
-  }
-
   const maxDaysGap = 7;
   const daysGap = getRandomInt(-maxDaysGap, maxDaysGap);
 
@@ -33,14 +53,27 @@ const generatePrice = () => {
   return getRandomInt(minPrice, maxPrice);
 };
 
-export const generatePoint = () => {
-  const dueDate = generateDate();
-  const price = generatePrice();
-
-  return {
-    id: nanoid(),
-    description: generateDescription(),
-    dueDate,
-    price
+const generateOffer = () => {
+  const offers = {
+    'Order an Uber': 20,
+    'Book a hotel': 40,
+    'Hire a guide': 50
   };
+
+  const randomIndex = getRandomInt(0, Object.keys(offers).length - 1);
+  const offer = Object.keys(offers)[randomIndex];
+  const cost = Object.values(offers)[randomIndex];
+
+  return {[offer]: cost};
 };
+
+export const generatePoint = () => ({
+  id: nanoid(),
+  name: generateName(),
+  type: generateType(),
+  destination: generateDestination(),
+  startDate: generateDate(),
+  endDate: generateDate(),
+  price: generatePrice(),
+  offers: generateOffer()
+});

@@ -1,14 +1,24 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import { translatePointDueDate } from '../utils.js';
 
 const BLANK_POINT = {
-  description: '',
-  dueDate: null,
+  id: 0,
+  name: '',
+  type: null,
+  destination: null,
+  startDate: null,
+  endDate: null,
+  price: null,
 };
 
 const createPointEditTemplate = (point = {}) => {
   const {
-    description = '',
-    dueDate = null,
+    type,
+    destination,
+    name,
+    startDate,
+    endDate,
+    price,
   } = point;
 
   return (
@@ -17,7 +27,7 @@ const createPointEditTemplate = (point = {}) => {
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -75,9 +85,9 @@ const createPointEditTemplate = (point = {}) => {
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-          Flight
+          ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination} list="destination-list-1">
         <datalist id="destination-list-1">
           <option value="Amsterdam"></option>
           <option value="Geneva"></option>
@@ -87,10 +97,10 @@ const createPointEditTemplate = (point = {}) => {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value=${dueDate}>
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value=${translatePointDueDate(startDate)}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value=${dueDate}>
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value=${translatePointDueDate(endDate)}>
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -98,7 +108,7 @@ const createPointEditTemplate = (point = {}) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="160">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value=${price}>
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -161,24 +171,55 @@ const createPointEditTemplate = (point = {}) => {
 
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${description}</p>
+        <p class="event__destination-description">${name}</p>
       </section>
     </section>
   </form>`
   );
 };
 
-export default class PointEditView extends AbstractView {
+export default class PointEditView extends AbstractStatefulView {
   #point = null;
 
   constructor(point = BLANK_POINT) {
     super();
-    this.#point = point;
+    this._state = PointEditView.parsePointToState(point);
+
+    this.element.querySelector('.event__type-toggle')
+      .addEventListener('click', this.#typeToggleHandler);
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('click', this.#destinationInputHandler);
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createPointEditTemplate(this.#point);
+    return createPointEditTemplate(this._state);
   }
+
+  reset = (point) => {
+    this.updateElement(
+      PointEditView.parsePointToState(point),
+    );
+  };
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  };
+
+  #typeToggleHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      isTypeChanged: !this._state.isTypeChanged,
+    });
+  };
+
+  #destinationInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      destination: evt.target.value,
+    });
+  };
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
@@ -187,7 +228,7 @@ export default class PointEditView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#point);
+    this._callback.formSubmit(PointEditView.parseStateToPoint(this._state));
   };
 
   setClickHandler = (callback) => {
@@ -198,5 +239,29 @@ export default class PointEditView extends AbstractView {
   #clickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
+  };
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-toggle')
+      .addEventListener('click', this.#typeToggleHandler);
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('click', this.#destinationInputHandler);
+  };
+
+  static parsePointToState = (point) => ({...point,
+    isTypeChanged: point.type !== null,
+    isDestinationChanged: point.destination !== null,
+  });
+
+  static parseStateToPoint = (state) => {
+    const point = {...state};
+
+    if (!point.isTypeChanged) {
+      point.type = null;
+    }
+
+    delete point.isTypeChanged;
+
+    return point;
   };
 }

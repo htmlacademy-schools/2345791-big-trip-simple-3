@@ -8,7 +8,7 @@ const getRandomInt = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const translatePointDueDate = (dueDate) => dayjs(dueDate).format('DD/MM/YY mm:ss');
+const translatePointDueDate = (dueDate) => dayjs(dueDate).format('DD/MM/YY/HH:mm');
 
 const isPointFuture = (dueDate) => dueDate && dayjs().isBefore(dueDate, 'D');
 
