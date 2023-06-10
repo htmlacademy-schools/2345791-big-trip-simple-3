@@ -24,13 +24,13 @@ export default class FilterPresenter {
 
     return [
       {
-        type: FilterType.ALL,
-        name: 'All',
-        count: filter[FilterType.ALL](points).length,
+        type: FilterType.EVERYTHING,
+        name: 'everything',
+        count: filter[FilterType.EVERYTHING](points).length,
       },
       {
         type: FilterType.FUTURE,
-        name: 'Future',
+        name: 'future',
         count: filter[FilterType.FUTURE](points).length,
       }
     ];

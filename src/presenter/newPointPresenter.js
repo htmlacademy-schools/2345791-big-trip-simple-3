@@ -1,6 +1,7 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
 import PointEditView from '../view/editPointView';
 import {UserAction, UpdateType} from '../const.js';
+import {BLANK_POINT} from '../view/editPointView';
 
 export default class NewPointPresenter {
   #pointListContainer = null;
@@ -13,14 +14,14 @@ export default class NewPointPresenter {
     this.#changeData = changeData;
   }
 
-  init = (callback) => {
+  init = (callback, offers, destinations) => {
     this.#destroyCallback = callback;
 
     if (this.#pointEditComponent !== null) {
       return;
     }
 
-    this.#pointEditComponent = new PointEditView();
+    this.#pointEditComponent = new PointEditView(BLANK_POINT, offers, destinations);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setDeleteHandler(this.#handleDeleteClick);
 

@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {translatePointDueDate, isPointFuture} from '../utils.js';
+import {isPointFuture, translateDatetoDay, translateDatetoTime} from '../utils.js';
 
 const createOfferItemTemplate = (offer) => {
   const {title, price} = offer;
@@ -26,7 +26,8 @@ const createOffersTemplate = (offerItems) => {
 
 const createPointTemplate = (point) => {
   const { destination, type, startDate, endDate, price, offers} = point;
-  const offersTemplate = createOffersTemplate(offers);
+  const filteredOffers = offers.filter((offer) => (offer !== undefined));
+  const offersTemplate = createOffersTemplate(filteredOffers);
 
   const futureClassName = isPointFuture(endDate)
     ? 'event--future'
@@ -34,40 +35,42 @@ const createPointTemplate = (point) => {
 
   return (
     `<li class="trip-events__item">
-      <div class="event ${futureClassName}">
-        <time class="event__date" datetime=${translatePointDueDate(startDate)}</time>
-        <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
-        </div>
-        <h3 class="event__title">${destination.name}</h3>
-        <div class="event__schedule">
-          <p class="event__time">
-            <time class="event__start-time" datetime=${translatePointDueDate(startDate)}</time>
-            &mdash;
-            <time class="event__end-time" datetime=${translatePointDueDate(endDate)}</time>
-          </p>
-        </div>
-        <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">${price}</span>
-        </p>
-        ${offersTemplate}
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
+    <div class="event ${futureClassName}">
+      <time class="event__date" datetime=${translateDatetoDay(startDate)}>${translateDatetoDay(startDate)}</time>
+      <div class="event__type">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-    </li>`
+      <h3 class="event__title">${type} ${destination.name}</h3>
+      <div class="event__schedule">
+        <p class="event__time">
+          <time class="event__start-time" datetime=${translateDatetoTime(startDate)}>${translateDatetoTime(startDate)}</time>
+          &mdash;
+          <time class="event__end-time" datetime=${translateDatetoTime(endDate)}>${translateDatetoTime(endDate)}</time>
+        </p>
+      </div>
+      <p class="event__price">
+        &euro;&nbsp;<span class="event__price-value">${price}</span>
+      </p>
+      ${offersTemplate}
+      <button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>
+    </div>
+  </li>`
   );
 };
 export default class PointView extends AbstractView {
   #point = null;
+  #allOffers = [];
 
-  constructor(point) {
+  constructor(point, offers) {
     super();
     this.#point = point;
+    this.#allOffers = offers;
   }
 
   get template() {
-    return createPointTemplate(this.#point);
+    return createPointTemplate(this.#point, this.#allOffers);
   }
 
   setEditClickHandler = (callback) => {

@@ -2,7 +2,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 import {FilterType} from '../const.js';
 
 const NoPointsTextType = {
-  [FilterType.ALL]: 'Click «ADD NEW POINT» in menu to create your first point',
+  [FilterType.EVERYTHING]: 'Click «ADD NEW POINT» in menu to create your first point',
   [FilterType.FUTURE]: 'There are no future points now',
 };
 

@@ -18,11 +18,27 @@ export default class PointsModel extends Observable {
     return this.#points;
   }
 
+  get offers() {
+    return this.#offers;
+  }
+
+  get destinations() {
+    return this.#destinations;
+  }
+
   init = async () => {
-    const offers = await this.#getInfoApiService.offers;
-    const destinations = await this.#getInfoApiService.destinations;
-    this.#offers = offers;
-    this.#destinations = destinations;
+    try {
+      const offers = await this.#getInfoApiService.offers;
+      this.#offers = offers;
+    } catch(err) {
+      this.#offers = [];
+    }
+    try {
+      const destinations = await this.#getInfoApiService.destinations;
+      this.#destinations = destinations;
+    } catch(err) {
+      this.#destinations = [];
+    }
     try {
       const points = await this.#pointsApiService.points;
       this.#points = points.map(this.#adaptToClient);
@@ -96,11 +112,19 @@ export default class PointsModel extends Observable {
       type: point['type'],
     };
     adaptedPoint['destination'] = this.#destinations.find((destination) => {
-      const neededId = point.destination;
+      const neededId = adaptedPoint.destination;
       return destination.id === neededId;
     });
+    const neededType = adaptedPoint.type;
+    const allOffers = this.#offers.find((offer) => (offer.type === neededType)).offers;
+    const neededOffers = [];
+    for (let i = 0; i < adaptedPoint.offers.length; i ++) {
+      const id = adaptedPoint.offers[i];
+      const neededOffer = allOffers.find((offer) => offer.id === id);
+      neededOffers.push(neededOffer);
+    }
+    adaptedPoint.offers = neededOffers;
 
-    // Ненужные ключи мы удаляем
     delete adaptedPoint['base_price'];
     delete adaptedPoint['date_from'];
     delete adaptedPoint['date_to'];
