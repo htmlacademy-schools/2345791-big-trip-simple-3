@@ -8,15 +8,20 @@ const getRandomInt = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const translatePointDueDate = (dueDate) => dayjs(dueDate).format('DD/MM/YY/HH:mm');
+const translatePointDueDate = (date) => dayjs(date).format('DD/MM/YY/HH:mm');
 
-const isPointFuture = (dueDate) => dueDate && dayjs().isBefore(dueDate, 'D');
+const translateDatetoDay = (date) => dayjs(date).format('MMMM DD');
+
+const translateDatetoTime = (date) => dayjs(date).format('HH:mm');
+
+
+const isPointFuture = (startDate) => startDate && dayjs().isBefore(startDate, 'D');
 
 const isPointExpiringToday = (dueDate) => dueDate && dayjs(dueDate).isSame(dayjs(), 'D');
 
 const filter = {
-  [FilterType.ALL]: (points) => points.filter((point) => point),
-  [FilterType.FUTURE]: (points) => points.filter((point) => isPointFuture(point.dueDate)),
+  [FilterType.EVERYTHING]: (points) => points.filter((point) => point),
+  [FilterType.FUTURE]: (points) => points.filter((point) => isPointFuture(point.startDate)),
 };
 
 const updateItem = (items, update) => {
@@ -63,4 +68,4 @@ const sortPointByPrice = (pointA, pointB) => {
 
 const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'DD/MM/YY/HH/mm');
 
-export {getRandomInt, translatePointDueDate, isPointFuture, isPointExpiringToday, filter, updateItem, sortPointByDate, sortPointByPrice, isDatesEqual};
+export {getRandomInt, translatePointDueDate, isPointFuture, isPointExpiringToday, filter, updateItem, sortPointByDate, sortPointByPrice, isDatesEqual, translateDatetoDay, translateDatetoTime};

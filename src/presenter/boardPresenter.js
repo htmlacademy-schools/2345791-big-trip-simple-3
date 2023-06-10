@@ -30,7 +30,7 @@ export default class BoardPresenter {
   #pointPresenter = new Map();
   #newPointPresenter = null;
   #currentSortType = SortType.DEFAULT;
-  #filterType = FilterType.ALL;
+  #filterType = FilterType.EVERYTHING;
   #isLoading = true;
 
   constructor(boardContainer, pointsModel, filterModel) {
@@ -58,15 +58,27 @@ export default class BoardPresenter {
     return filteredPoints;
   }
 
-  init = () => {
+  get filterType() {
+    return this.#filterType;
+  }
 
+  get offers() {
+    const offers = this.#pointsModel.offers;
+    return offers;
+  }
+
+  get currentSortType() {
+    return this.#currentSortType;
+  }
+
+  init = () => {
     this.#renderBoard();
   };
 
   createPoint = (callback) => {
     this.#currentSortType = SortType.DEFAULT;
-    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
-    this.#newPointPresenter.init(callback);
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newPointPresenter.init(callback, this.#pointsModel.offers, this.#pointsModel.destinations);
   };
 
   #handleLoadMoreButtonClick = () => {
@@ -104,7 +116,7 @@ export default class BoardPresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#pointPresenter.get(data.id).init(data);
+        this.#pointPresenter.get(data.id).init(data, this.#pointsModel.offers, this.#pointsModel.destinations);
         break;
       case UpdateType.MINOR:
         this.#clearBoard();
@@ -124,7 +136,7 @@ export default class BoardPresenter {
 
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
-      this.#currentSortType = sortType.DEFAULT;
+      this.#currentSortType = SortType.DEFAULT;
     }
 
     this.#currentSortType = sortType;
@@ -141,7 +153,7 @@ export default class BoardPresenter {
 
   #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(this.#pointsListComponent.element, this.#handleViewAction, this.#handleModeChange);
-    pointPresenter.init(point);
+    pointPresenter.init(point, this.#pointsModel.offers, this.#pointsModel.destinations);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
 

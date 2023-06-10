@@ -9,7 +9,7 @@ const createSortTemplate = (currentSortType) => {
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       <div class="trip-sort__item  trip-sort__item--time">
         <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" checked = ${isSortByDate}>
-        <label class="trip-sort__btn" for="sort-time">Time</label>
+        <label class="trip-sort__btn" for="sort-time">Date</label>
       </div>
       <div class="trip-sort__item  trip-sort__item--price">
         <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" checked = ${isSortByPrice}>
@@ -37,11 +37,11 @@ export default class SortView extends AbstractView {
   };
 
   #sortTypeChangeHandler = (evt) => {
-    if (evt.target.tagName !== 'input') {
+    if (evt.target.tagName !== 'LABEL') {
       return;
     }
 
     evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.dataset.sortType);
+    this._callback.sortTypeChange(evt.target.textContent);
   };
 }
