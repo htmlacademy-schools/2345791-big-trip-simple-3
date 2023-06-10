@@ -12,7 +12,7 @@ const END_POINT = 'https://18.ecmascript.pages.academy/big-trip';
 
 const siteMainElement = document.querySelector('.trip-main');
 const tripControls = document.querySelector('.trip-controls__filters');
-const tripElement = document.querySelector('.trip-events');
+const tripElement = document.querySelector('.page-body__page-main');
 
 const pointsModel = new PointsModel(new PointsApiService(END_POINT, AUTHORIZATION), new GetInfoApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();

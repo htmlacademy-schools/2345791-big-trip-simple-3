@@ -15,14 +15,14 @@ const BLANK_POINT = {
 
 const types = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
-const createOfferItemTemplate = (offer, offers) => {
+const createOfferItemTemplate = (offer, offers, isDisabled) => {
   const {title, price} = offer;
   const isActive = offers.includes(offer);
 
   return (
     `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${title}-1" type="checkbox" name="event-offer-${title}" ${isActive ?
-      'checked' : 'unchecked'}>
+      'checked' : 'unchecked'} ${isDisabled ? 'disabled' : ''}>
     <label class="event__offer-label" for="event-offer-${title}-1">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
@@ -32,9 +32,9 @@ const createOfferItemTemplate = (offer, offers) => {
   );
 };
 
-const createOffersTemplate = (allOffers, offers) => {
+const createOffersTemplate = (allOffers, offers, isDisabled) => {
   const offerItemsTemplate = allOffers
-    .map((offer) => createOfferItemTemplate(offer, offers))
+    .map((offer) => createOfferItemTemplate(offer, offers, isDisabled))
     .join('');
 
   return `<div class="event__available-offers">
@@ -78,8 +78,8 @@ const createTypeTemplate = (type, id) => (
 </div>`
 );
 
-const createTypesTemplate = (allTypes, id) => (
-  `<input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+const createTypesTemplate = (id, isDisabled) => (
+  `<input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
   <div class="event__type-list">
     <fieldset class="event__type-group">
@@ -97,7 +97,10 @@ const createPointEditTemplate = (point = {}, allOffers, destinations) => {
     endDate,
     destination,
     type,
-    offers
+    offers,
+    isDisabled,
+    isSaving,
+    isDeleting,
   } = point;
   if (point.type !== null) {
     allOffers = allOffers ? allOffers.find((offer) => (offer.type === point.type)).offers : [];
@@ -111,14 +114,14 @@ const createPointEditTemplate = (point = {}, allOffers, destinations) => {
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type ? type : ''}.png" alt="Event type icon">
         </label>
-        ${createTypesTemplate(types, id)}
+        ${createTypesTemplate(id, isDisabled)}
       </div>
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-${id}">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value=${destination ? destination.name : 'No destination'} list="destination-list-${id}">
+        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination ? destination.name : 'No destination'}" list="destination-list-${id}">
         ${createDestinationsTemplate(destinations, id)}
       </div>
 
@@ -138,8 +141,8 @@ const createPointEditTemplate = (point = {}, allOffers, destinations) => {
         <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value=${price}>
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit"  ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+      <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}> ${isDeleting ? 'Deleting...' : 'Delete'}</button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
@@ -147,7 +150,7 @@ const createPointEditTemplate = (point = {}, allOffers, destinations) => {
     <section class="event__details">
       <section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-        ${createOffersTemplate(allOffers, offers)}
+        ${createOffersTemplate(allOffers, offers, isDisabled)}
       </section>
 
       <section class="event__section  event__section--destination">
@@ -219,7 +222,6 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   #destinationInputHandler = (evt) => {
-    evt.preventDefault();
     this._setState({
       destination: evt.target.value,
     });
@@ -331,6 +333,9 @@ export default class PointEditView extends AbstractStatefulView {
 
     delete point.isTypeChanged;
     delete point.isDestinationChanged;
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
 
     return point;
   };

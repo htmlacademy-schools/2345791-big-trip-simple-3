@@ -38,33 +38,9 @@ const updateItem = (items, update) => {
   ];
 };
 
-const getWeightForNullDate = (dateA, dateB) => {
-  if (dateA === null && dateB === null) {
-    return 0;
-  }
+const sortPointByDate = (pointA, pointB) => (dayjs(pointA.startDate).diff(dayjs(pointB.startDate)));
 
-  if (dateA === null) {
-    return 1;
-  }
-
-  if (dateB === null) {
-    return -1;
-  }
-
-  return null;
-};
-
-const sortPointByDate = (pointA, pointB) => {
-  const weight = getWeightForNullDate(pointA.dueDate, pointB.dueDate);
-
-  return weight ?? dayjs(pointA.dueDate).diff(dayjs(pointB.dueDate));
-};
-
-const sortPointByPrice = (pointA, pointB) => {
-  const weight = getWeightForNullDate(pointA.price, pointB.price);
-
-  return weight ?? dayjs(pointA.dueDate).diff(dayjs(pointB.dueDate));
-};
+const sortPointByPrice = (pointA, pointB) => ( pointB.price - pointA.price);
 
 const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'DD/MM/YY/HH/mm');
 
